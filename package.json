@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node tests/rag-core.test.mjs",
+    "evaluate": "node scripts/evaluate.mjs"
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.33",
     "@ai-sdk/openai": "^3.0.50",
+    "@chroma-core/default-embed": "^0.1.9",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
@@ -42,6 +45,7 @@
     "@vercel/analytics": "1.6.1",
     "ai": "^6.0.145",
     "autoprefixer": "^10.4.20",
+    "chromadb": "^3.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
@@ -63,13 +67,17 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^10.8.1",
+    "globals": "^17.10.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.2.0",
     "tw-animate-css": "1.3.3",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "typescript-eslint": "^8.67.0"
   }
 }

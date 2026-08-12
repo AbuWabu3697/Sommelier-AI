@@ -6,7 +6,6 @@ import { useVoiceInput } from '@/hooks/use-voice-input'
 import { useTextToSpeech } from '@/hooks/use-text-to-speech'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -69,6 +68,7 @@ interface ConversationItem {
   text: string
   spokenText?: string
   recommendations?: RecommendationCard[]
+  sources?: Array<{ id: string; name: string }>
 }
 
 function ScoreBars({ visuals }: { visuals: ScoreVisual[] }) {
@@ -148,6 +148,7 @@ export function WineAssistant() {
     const history = conversation.slice(-8).map((item) => ({
       role: item.type === 'question' ? 'user' as const : 'assistant' as const,
       text: item.text,
+      wineIds: item.sources?.map((source) => source.id) ?? item.recommendations?.map((wine) => wine.id) ?? [],
     }))
 
     setConversation((prev) => [...prev, { type: 'question', text: displayText || question }])
@@ -167,6 +168,7 @@ export function WineAssistant() {
       const answer = data.answer || data.error || "I'm sorry, I couldn't process that question."
       const spokenText = data.spokenSummary || answer
       const recommendations = Array.isArray(data.recommendations) ? data.recommendations : []
+      const sources = Array.isArray(data.sources) ? data.sources : []
 
       setConversation((prev) => [
         ...prev,
@@ -175,6 +177,7 @@ export function WineAssistant() {
           text: answer,
           spokenText,
           recommendations,
+          sources,
         },
       ])
 

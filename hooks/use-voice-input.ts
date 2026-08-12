@@ -23,7 +23,7 @@ export function useVoiceInput(): UseVoiceInputReturn {
   const createRecognition = useCallback(() => {
     const SpeechRecognitionCtor =
       window.SpeechRecognition ||
-      (window as Window & typeof globalThis & { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition
+      (window as Window & { webkitSpeechRecognition?: SpeechRecognitionConstructor }).webkitSpeechRecognition
 
     if (!SpeechRecognitionCtor) {
       return null
@@ -92,6 +92,11 @@ export function useVoiceInput(): UseVoiceInputReturn {
         recognitionRef.current = createRecognition()
       }
 
+      if (!recognitionRef.current) {
+        setError('Speech recognition is not supported in this browser.')
+        return
+      }
+
       try {
         recognitionRef.current.start()
       } catch (e) {
@@ -99,7 +104,9 @@ export function useVoiceInput(): UseVoiceInputReturn {
         // Recreate the recognizer and retry once. Some browsers leave the instance in a bad state.
         try {
           recognitionRef.current?.abort()
-        } catch {}
+        } catch {
+          // Some browser implementations throw when aborting an already-stopped recognizer.
+        }
         recognitionRef.current = createRecognition()
         try {
           recognitionRef.current?.start()
