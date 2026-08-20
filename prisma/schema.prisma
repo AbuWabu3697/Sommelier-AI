@@ -1,0 +1,46 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+// Wine record normalized from the Google Sheets source (448 records).
+// The embedding column holds a 384-dimensional vector produced by
+// @chroma-core/default-embed. Rows without embeddings use the
+// deterministic bestValueScore fallback in the /recommend handler.
+model Wine {
+  id             String   @id
+  name           String
+  producer       String   @default("")
+  varietal       String   @default("")
+  region         String   @default("")
+  country        String   @default("")
+  appellation    String   @default("")
+  vintage        String   @default("")
+  price          Float?
+  type           String   @default("")
+  abv            String   @default("")
+  description    String   @default("")
+  tastingNotes   String   @default("") @map("tasting_notes")
+  body           String   @default("")
+  sweetness      String   @default("")
+  acidity        String   @default("")
+  foodPairing    String   @default("") @map("food_pairing")
+  imageUrl       String   @default("") @map("image_url")
+  referenceUrl   String   @default("") @map("reference_url")
+  avgCriticScore Float?   @map("avg_critic_score")
+  bestValueScore Float?   @map("best_value_score")
+  ratingCount    Int      @default(0) @map("rating_count")
+  documentText   String   @default("") @map("document_text")
+  // pgvector column — 384 dims from @chroma-core/default-embed
+  embedding      Unsupported("vector(384)")?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("wines")
+}
